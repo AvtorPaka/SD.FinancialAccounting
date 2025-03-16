@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SD.FinancialAccounting.Domain\SD.FinancialAccounting.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="FluentMigrator" Version="6.2.0" />
+      <PackageReference Include="FluentMigrator.Runner" Version="6.2.0" />
+      <PackageReference Include="FluentMigrator.Runner.Postgres" Version="6.2.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+      <PackageReference Include="Npgsql" Version="9.0.3" />
+      <PackageReference Include="Npgsql.DependencyInjection" Version="9.0.3" />
+    </ItemGroup>
+
+</Project>

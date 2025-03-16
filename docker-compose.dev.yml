@@ -1,0 +1,21 @@
+services:
+  database:
+    image: postgres:latest
+    container_name: sd-fa-pg-container
+    restart: always
+    shm_size: 128mb
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PSWD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - sd-fa-pg-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - ${PG_PORT}:5432
+      
+volumes:
+  sd-fa-pg-data:
+    driver: local
