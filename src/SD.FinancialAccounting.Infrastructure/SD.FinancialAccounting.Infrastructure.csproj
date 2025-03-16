@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SD.FinancialAccounting.Domain\SD.FinancialAccounting.Domain.csproj" />
+      <ProjectReference Include="..\SD.FinancialAccounting.Hosting\SD.FinancialAccounting.Hosting.csproj" />
     </ItemGroup>
 
     <ItemGroup>

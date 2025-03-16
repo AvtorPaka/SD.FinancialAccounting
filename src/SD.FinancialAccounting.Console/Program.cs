@@ -1,9 +1,18 @@
-﻿namespace SD.FinancialAccounting.Console;
+﻿using SD.FinancialAccounting.Console.Extensions;
+using SD.FinancialAccounting.Hosting;
 
-class Program
+namespace SD.FinancialAccounting.Console;
+
+internal sealed class Program
 {
-    private static void Main()
+    private static async Task Main()
     {
-        System.Console.WriteLine("Hi hi ha ha");
+        var hostBuilder = Host
+            .CreateDefaultBuilder()
+            .ConfigureConsoleHandler();
+        
+
+        using var app = hostBuilder.Build();
+        await app.RunAsync();
     }
 }
