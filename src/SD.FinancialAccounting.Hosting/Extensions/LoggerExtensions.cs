@@ -19,7 +19,7 @@ public static partial class LoggerExtensions
 
     [LoggerMessage(
         LogLevel.Warning,
-        Message = "[{CurTime}] Exception occured during request handling {ExceptionMessage}"
+        Message = "[{CurTime}] Exception occured during request handling : {ExceptionMessage}"
         )]
     internal static partial void LogDefaultException(this ILogger logger, DateTime curTime, string? exceptionMessage);
 }

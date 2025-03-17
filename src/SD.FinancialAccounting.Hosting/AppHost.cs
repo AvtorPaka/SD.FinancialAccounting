@@ -44,7 +44,8 @@ public sealed class AppHost : IHost, IAsyncDisposable
         {
             try
             {
-                await handler.HandleRequests(linkedCts);
+                var response = await handler.HandleRequests(linkedCts);
+                Console.WriteLine(response);
             }
             catch (OperationCanceledException)
             {

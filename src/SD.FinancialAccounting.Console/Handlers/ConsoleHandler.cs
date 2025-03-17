@@ -1,4 +1,6 @@
-using Microsoft.Extensions.Configuration;
+using SD.FinancialAccounting.Console.Contracts.Responses;
+using SD.FinancialAccounting.Console.Enums;
+using SD.FinancialAccounting.Console.Utils;
 using SD.FinancialAccounting.Hosting.Abstractions;
 
 namespace SD.FinancialAccounting.Console.Handlers;
@@ -6,17 +8,41 @@ namespace SD.FinancialAccounting.Console.Handlers;
 public class ConsoleHandler : IConsoleHandler
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IConfiguration _configuration;
 
-    public ConsoleHandler(IServiceProvider serviceProvider, IConfiguration configuration)
+    public ConsoleHandler(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _configuration = configuration;
     }
 
-    public async Task HandleRequests(CancellationTokenSource cts)
+    public async Task<ResponseBase> HandleRequests(CancellationTokenSource cts)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1), cts.Token);
-        throw new NotImplementedException();
+        ConsoleHelper.PrintMainMenu();
+        MainMenuAction sectionAction = (MainMenuAction)ConsoleHelper.ReadKeyInRange(1, 5);
+
+        ResponseBase response;
+
+        switch (sectionAction)
+        {
+            case MainMenuAction.AccountsSection:
+                response = await AccountActionHandler.HandleAccountAction(_serviceProvider, cts.Token);
+                break;
+            case MainMenuAction.OperationsSection:
+                response = await OperationActionHandler.HandleAccountAction(_serviceProvider, cts.Token);
+                break;
+            case MainMenuAction.CategoriesSection:
+                response = new ControllerResponse("Categ section");
+                break;
+            case MainMenuAction.AnalyticsSection:
+                response = new ControllerResponse("Analytics section");
+                break;
+            case MainMenuAction.Exit:
+                response = new ControllerResponse("");
+                await cts.CancelAsync();
+                break;
+            default:
+                throw new ArgumentException("Unsupported menu action type");
+        }
+
+        return response;
     }
 }
