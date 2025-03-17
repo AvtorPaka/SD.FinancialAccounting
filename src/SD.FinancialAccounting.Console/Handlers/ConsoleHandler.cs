@@ -1,5 +1,5 @@
-using SD.FinancialAccounting.Console.Contracts.Responses;
 using SD.FinancialAccounting.Console.Enums;
+using SD.FinancialAccounting.Console.Handlers.ActionHandlers;
 using SD.FinancialAccounting.Console.Utils;
 using SD.FinancialAccounting.Hosting.Abstractions;
 
@@ -16,33 +16,25 @@ public class ConsoleHandler : IConsoleHandler
 
     public async Task<ResponseBase> HandleRequests(CancellationTokenSource cts)
     {
-        ConsoleHelper.PrintMainMenu();
-        MainMenuAction sectionAction = (MainMenuAction)ConsoleHelper.ReadKeyInRange(1, 5);
+        ConsoleUiHelpers.PrintMainMenu();
+        MainMenuAction sectionAction = (MainMenuAction)ConsoleHelper.ReadKeyInRange();
 
-        ResponseBase response;
 
-        switch (sectionAction)
+        ActionHandlerBase actionHandler = sectionAction switch
         {
-            case MainMenuAction.AccountsSection:
-                response = await AccountActionHandler.HandleAccountAction(_serviceProvider, cts.Token);
-                break;
-            case MainMenuAction.OperationsSection:
-                response = await OperationActionHandler.HandleAccountAction(_serviceProvider, cts.Token);
-                break;
-            case MainMenuAction.CategoriesSection:
-                response = new ControllerResponse("Categ section");
-                break;
-            case MainMenuAction.AnalyticsSection:
-                response = new ControllerResponse("Analytics section");
-                break;
-            case MainMenuAction.Exit:
-                response = new ControllerResponse("");
-                await cts.CancelAsync();
-                break;
-            default:
-                throw new ArgumentException("Unsupported menu action type");
-        }
+            MainMenuAction.AccountsSection => new AccountActionHandler(_serviceProvider),
+            MainMenuAction.OperationsSection => new OperationActionHandler(_serviceProvider),
+            MainMenuAction.CategoriesSection => new CategoryActionHandler(_serviceProvider),
+            MainMenuAction.AnalyticsSection => new ExitActionHandler(_serviceProvider), //TODO: Rework
+            MainMenuAction.Exit => new ExitActionHandler(_serviceProvider),
+            _ => throw new ArgumentException("Unsupported menu action type")
+        };
 
-        return response;
+        if (sectionAction == MainMenuAction.Exit)
+        {
+            await cts.CancelAsync();
+        }
+        
+        return await actionHandler.HandleAction(cts.Token);
     }
 }

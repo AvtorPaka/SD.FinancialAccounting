@@ -1,6 +1,6 @@
 namespace SD.FinancialAccounting.Domain.Models.Enums;
 
 public enum OperationCategoryType {
-    Income = 0,
+    Income = 1,
     Outgo
 }

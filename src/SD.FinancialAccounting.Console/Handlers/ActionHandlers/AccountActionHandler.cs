@@ -6,17 +6,20 @@ using SD.FinancialAccounting.Console.Enums;
 using SD.FinancialAccounting.Console.Utils;
 using SD.FinancialAccounting.Hosting.Abstractions;
 
-namespace SD.FinancialAccounting.Console.Handlers;
+namespace SD.FinancialAccounting.Console.Handlers.ActionHandlers;
 
-internal static class AccountActionHandler
+internal class AccountActionHandler: ActionHandlerBase
 {
-    internal static async Task<ResponseBase> HandleAccountAction(IServiceProvider services, CancellationToken cancellationToken)
+    public AccountActionHandler(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        System.Console.Clear();
-        ConsoleHelper.PrintAccountSectionMenu();
+    }
+
+    internal override async Task<ResponseBase> HandleAction(CancellationToken cancellationToken)
+    {
+        ConsoleUiHelpers.PrintAccountSectionMenu();
         AccountSectionAction accountAction = (AccountSectionAction)ConsoleHelper.ReadKeyInRange(1, 6);
 
-        await using var scope = services.CreateAsyncScope();
+        await using var scope = Services.CreateAsyncScope();
         var controller = scope.ServiceProvider.GetRequiredService<BankAccountController>();
 
         return accountAction switch
@@ -34,8 +37,8 @@ internal static class AccountActionHandler
     // TODO: Rework
     private static async Task<ResponseBase> HandleExport(BankAccountController controller, CancellationToken cancellationToken)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1));
-        ConsoleHelper.PrintExportSubSectionMenu();
+        await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
+        ConsoleUiHelpers.PrintExportSubSectionMenu();
         ExportType exportType = (ExportType)ConsoleHelper.ReadKeyInRange(1, 4);
 
         if (exportType == ExportType.Cancel)
