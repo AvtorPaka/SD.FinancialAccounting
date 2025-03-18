@@ -1,6 +1,6 @@
 using SD.FinancialAccounting.Hosting.Abstractions;
 
-namespace SD.FinancialAccounting.Console.Handlers.ActionHandlers;
+namespace SD.FinancialAccounting.Console.Handlers.ActionHandlers.Abstraction;
 
 internal abstract class ActionHandlerBase
 {

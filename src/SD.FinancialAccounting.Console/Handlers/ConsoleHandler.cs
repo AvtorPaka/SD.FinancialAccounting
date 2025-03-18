@@ -1,34 +1,25 @@
 using SD.FinancialAccounting.Console.Enums;
-using SD.FinancialAccounting.Console.Handlers.ActionHandlers;
+using SD.FinancialAccounting.Console.Handlers.ActionHandlers.Abstraction;
 using SD.FinancialAccounting.Console.Utils;
 using SD.FinancialAccounting.Hosting.Abstractions;
 
 namespace SD.FinancialAccounting.Console.Handlers;
 
-public class ConsoleHandler : IConsoleHandler
+internal class ConsoleHandler : IConsoleHandler
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ActionHandlerFactory _handlerFactory;
 
-    public ConsoleHandler(IServiceProvider serviceProvider)
+    public ConsoleHandler(ActionHandlerFactory handlerFactory)
     {
-        _serviceProvider = serviceProvider;
+        _handlerFactory = handlerFactory;
     }
 
     public async Task<ResponseBase> HandleRequests(CancellationTokenSource cts)
     {
         ConsoleUiHelpers.PrintMainMenu();
         MainMenuAction sectionAction = (MainMenuAction)ConsoleHelper.ReadKeyInRange();
-
-
-        ActionHandlerBase actionHandler = sectionAction switch
-        {
-            MainMenuAction.AccountsSection => new AccountActionHandler(_serviceProvider),
-            MainMenuAction.OperationsSection => new OperationActionHandler(_serviceProvider),
-            MainMenuAction.CategoriesSection => new CategoryActionHandler(_serviceProvider),
-            MainMenuAction.AnalyticsSection => new ExitActionHandler(_serviceProvider), //TODO: Rework
-            MainMenuAction.Exit => new ExitActionHandler(_serviceProvider),
-            _ => throw new ArgumentException("Unsupported menu action type")
-        };
+        
+        ActionHandlerBase actionHandler = _handlerFactory.GetHandler(sectionAction);
 
         if (sectionAction == MainMenuAction.Exit)
         {

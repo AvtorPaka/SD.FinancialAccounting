@@ -16,6 +16,7 @@ internal sealed class Program
         hostBuilder.ConfigureServices((config, services) =>
             {
                 services
+                    .AddConsoleInfrastructure()
                     .AddControllers()
                     .AddDomainServices()
                     .AddDalRepositories()
