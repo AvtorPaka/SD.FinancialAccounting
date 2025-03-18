@@ -1,3 +1,4 @@
+using SD.FinancialAccounting.Domain.Contracts.Dal.Interfaces;
 using SD.FinancialAccounting.Domain.Models;
 using SD.FinancialAccounting.Domain.Services.Interfaces;
 
@@ -5,6 +6,13 @@ namespace SD.FinancialAccounting.Domain.Services;
 
 internal sealed class BankAccountService: IBankAccountService
 {
+    private readonly IBankAccountRepository _bankAccountRepository;
+
+    public BankAccountService(IBankAccountRepository bankAccountRepository)
+    {
+        _bankAccountRepository = bankAccountRepository;
+    }
+    
     public async Task<BankAccountModel> CreateBankAccount(string name, CancellationToken cancellationToken)
     {
         await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);

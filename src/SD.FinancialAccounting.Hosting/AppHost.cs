@@ -20,6 +20,8 @@ public sealed class AppHost : IHost, IAsyncDisposable
         _exceptionHandler = exHandler;
     }
 
+    public IServiceProvider Services => _appServiceProvider;
+
     public async Task RunAsync(CancellationToken cancellationToken = default)
     {
         if (_cts != null)

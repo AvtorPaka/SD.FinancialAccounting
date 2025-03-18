@@ -1,6 +1,7 @@
 ﻿using SD.FinancialAccounting.Console.Extensions;
 using SD.FinancialAccounting.Domain.DependencyInjection.Extensions;
 using SD.FinancialAccounting.Hosting;
+using SD.FinancialAccounting.Infrastructure.Extensions;
 
 namespace SD.FinancialAccounting.Console;
 
@@ -16,12 +17,16 @@ internal sealed class Program
             {
                 services
                     .AddControllers()
-                    .AddDomainServices();
+                    .AddDomainServices()
+                    .AddDalRepositories()
+                    .AddDalInfrastructure(config);
             }
         );
 
 
         using var app = hostBuilder.Build();
-        await app.RunAsync();
+        await app
+            .MigrateUp()
+            .RunAsync();
     }
 }

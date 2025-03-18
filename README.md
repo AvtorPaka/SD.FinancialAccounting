@@ -28,6 +28,10 @@ cd SD.FinancialAccounting/ && touch .env && cp .env.template .env && docker comp
 cd src/SD.FinancialAccounting.Console/ && dotnet run
 ```
 
+### PgSQL Scheme
+
+![scheme](img/pgsql_scheme.png)
+
 ### GoF patterns usage
 
 

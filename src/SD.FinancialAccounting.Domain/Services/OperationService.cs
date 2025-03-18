@@ -1,4 +1,5 @@
 using SD.FinancialAccounting.Domain.Containers;
+using SD.FinancialAccounting.Domain.Contracts.Dal.Interfaces;
 using SD.FinancialAccounting.Domain.Models;
 using SD.FinancialAccounting.Domain.Services.Interfaces;
 
@@ -6,7 +7,14 @@ namespace SD.FinancialAccounting.Domain.Services;
 
 internal sealed class OperationService: IOperationService
 {
-    public async Task<OperationModel> CreateOperation(CreateOperationContainer container, CancellationToken cancellationToken)
+    private readonly IOperationsRepository _operationsRepository;
+
+    public OperationService(IOperationsRepository operationsRepository)
+    {
+        _operationsRepository = operationsRepository;
+    }
+    
+    public async Task<long> CreateOperation(CreateOperationContainer container, CancellationToken cancellationToken)
     {
         await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
         throw new NotImplementedException();

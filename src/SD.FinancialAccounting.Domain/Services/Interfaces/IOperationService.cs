@@ -5,7 +5,7 @@ namespace SD.FinancialAccounting.Domain.Services.Interfaces;
 
 public interface IOperationService
 {
-    public Task<OperationModel> CreateOperation(CreateOperationContainer container, CancellationToken cancellationToken);
+    public Task<long> CreateOperation(CreateOperationContainer container, CancellationToken cancellationToken);
 
     // Edit methods are separated due to significant differences in the logic of change processing.
     public Task<OperationModel> EditOperationDescription(long id, string newDescription, CancellationToken cancellationToken);
