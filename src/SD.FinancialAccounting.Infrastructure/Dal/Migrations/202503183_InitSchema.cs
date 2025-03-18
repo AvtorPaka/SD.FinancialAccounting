@@ -4,7 +4,7 @@ using FluentMigrator.Postgres;
 
 namespace SD.FinancialAccounting.Infrastructure.Dal.Migrations;
 
-[Migration(version:202503182, TransactionBehavior.Default)]
+[Migration(version:202503183, TransactionBehavior.Default)]
 public class InitSchema: Migration {
     public override void Up()
     {
@@ -15,7 +15,7 @@ public class InitSchema: Migration {
 
         Create.Table("operation_categories")
             .WithColumn("id").AsInt64().PrimaryKey("operation_categories_pk").Identity()
-            .WithColumn("type").AsInt32().NotNullable()
+            .WithColumn("type").AsCustom("operation_category_type").NotNullable()
             .WithColumn("name").AsString(50).NotNullable();
 
         Create.Table("operations")

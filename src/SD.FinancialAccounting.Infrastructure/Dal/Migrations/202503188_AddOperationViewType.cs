@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace SD.FinancialAccounting.Infrastructure.Dal.Migrations;
 
-[Migration(version: 202503187, TransactionBehavior.Default)]
+[Migration(version: 202503188, TransactionBehavior.Default)]
 public class AddOperationViewType: Migration {
     public override void Up()
     {
@@ -15,7 +15,7 @@ DO $$
                 operation_id        bigint,
                 bank_account_id     bigint,
                 category_id         bigint,
-                category_type       integer,
+                category_type       operation_category_type,
                 category_name       varchar(50),
                 amount              numeric(19, 5),
                 date                timestamp with time zone,

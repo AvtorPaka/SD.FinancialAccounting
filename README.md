@@ -30,7 +30,7 @@ cd src/SD.FinancialAccounting.Console/ && dotnet run
 
 ### PgSQL Scheme
 
-![scheme](img/pgsql_scheme.png)
+![scheme](img/psql_scheme.png)
 
 ### GoF patterns usage
 

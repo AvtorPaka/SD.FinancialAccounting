@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace SD.FinancialAccounting.Infrastructure.Dal.Migrations;
 
-[Migration(version: 2025031804, TransactionBehavior.Default)]
+[Migration(version: 202503185, TransactionBehavior.Default)]
 public class AddBankAccountType: Migration {
     public override void Up()
     {

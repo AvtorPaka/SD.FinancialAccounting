@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace SD.FinancialAccounting.Infrastructure.Dal.Migrations;
 
-[Migration(version: 202503183, TransactionBehavior.Default)]
+[Migration(version: 202503184, TransactionBehavior.Default)]
 public class AddOperationView: Migration {
     public override void Up()
     {

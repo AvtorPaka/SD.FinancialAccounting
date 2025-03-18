@@ -56,7 +56,7 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
     {
         System.Console.WriteLine(">>Input category name:");
         string categoryName = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect category name");
-        System.Console.WriteLine(">>Input choose category type:");
+        System.Console.WriteLine(">>Choose category type:");
         ConsoleUiHelpers.PrintCategoryTypes();
         OperationCategoryType type = (OperationCategoryType)ConsoleHelper.ReadKeyInRange(1, 2);
 
@@ -106,7 +106,7 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
     {
         System.Console.WriteLine(">>Input category id:");
         long categoryId = ConsoleHelper.ReadLong();
-        System.Console.WriteLine(">>Input new choose category type:\n");
+        System.Console.WriteLine(">>Choose new category type:\n");
         ConsoleUiHelpers.PrintCategoryTypes();
         OperationCategoryType type = (OperationCategoryType)ConsoleHelper.ReadKeyInRange(1, 2);
 

@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace SD.FinancialAccounting.Infrastructure.Dal.Migrations;
 
-[Migration(version: 202503185, TransactionBehavior.Default)]
+[Migration(version: 202503186, TransactionBehavior.Default)]
 public class AddOperationCategoryType: Migration {
     public override void Up()
     {
@@ -13,7 +13,7 @@ DO $$
             CREATE TYPE operation_category_v1 as
             (
                 id      bigint,
-                type    integer,
+                type    operation_category_type,
                 name    varchar(50)
             );
         END IF;

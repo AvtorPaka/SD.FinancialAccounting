@@ -5,7 +5,7 @@ namespace SD.FinancialAccounting.Domain.Contracts.Dal.Interfaces;
 
 public interface ICategoriesRepository: IDbRepository
 {
-    public Task<long[]> AddCategories(CategoryEntity[] entities, CancellationToken cancellationToken);
+    public Task<IReadOnlyList<CategoryEntity>> AddCategories(CategoryEntity[] entities, CancellationToken cancellationToken);
 
     public Task<IReadOnlyList<CategoryEntity>> QueryAllCategories(CancellationToken cancellationToken);
 

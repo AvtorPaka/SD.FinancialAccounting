@@ -1,8 +1,10 @@
+using Dapper;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Npgsql.NameTranslation;
 using SD.FinancialAccounting.Domain.Contracts.Dal.Entities;
+using SD.FinancialAccounting.Domain.Models.Enums;
 using SD.FinancialAccounting.Infrastructure.Configuration.Models;
 
 namespace SD.FinancialAccounting.Infrastructure.Dal.Infrastructure;
@@ -26,6 +28,7 @@ internal static class Postgres
                 builder.MapComposite<CategoryEntity>("operation_category_v1", Translator);
                 builder.MapComposite<OperationEntity>("operation_v1", Translator);
                 builder.MapComposite<OperationViewEntity>("operation_view_v1", Translator);
+                builder.MapEnum<OperationCategoryType>("operation_category_type");
             }
         );
     }

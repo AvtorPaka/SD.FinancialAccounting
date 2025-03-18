@@ -9,7 +9,12 @@ internal static class ConsoleHelper
 
     internal static string ConvertToString(this IReadOnlyList<BankAccountModel> models)
     {
-        StringBuilder builder = new StringBuilder("\nBank Accounts:\n");
+        StringBuilder builder = new StringBuilder($"\nBank Accounts:\n{Delimiter}\n");
+        
+        if (models.Count == 0)
+        {
+            builder.Append("Bank accounts are empty.\n");
+        }
 
         foreach (var account in models)
         {
@@ -21,8 +26,13 @@ internal static class ConsoleHelper
 
     internal static string ConvertToString(this IReadOnlyList<OperationCategoryModel> models)
     {
-        StringBuilder builder = new StringBuilder("\nCategories:\n");
+        StringBuilder builder = new StringBuilder($"\nCategories:\n{Delimiter}\n");
 
+        if (models.Count == 0)
+        {
+            builder.Append("Categories are empty.\n");
+        }
+        
         foreach (var account in models)
         {
             builder.Append($"{account.ToString()}\n{Delimiter}\n");
@@ -33,7 +43,12 @@ internal static class ConsoleHelper
 
     internal static string ConvertToString(this IReadOnlyList<OperationModel> models)
     {
-        StringBuilder builder = new StringBuilder("\nOperations:\n");
+        StringBuilder builder = new StringBuilder($"\nOperations:\n{Delimiter}\n");
+        
+        if (models.Count == 0)
+        {
+            builder.Append("Operations are empty.\n");
+        }
 
         foreach (var account in models)
         {

@@ -25,8 +25,8 @@ public static class ServiceCollectionExtensions
         PostgreConnectionOptions pgOptions = postgresConnectionSection.Get<PostgreConnectionOptions>() ??
                                              throw new ArgumentException("Postgre connection options is missing.");
         
-        Postgres.AddDataSource(services, pgOptions);
         Postgres.ConfigureTypeMapOptions();
+        Postgres.AddDataSource(services, pgOptions);
         Postgres.AddMigrations(services, pgOptions);
 
         return services;
