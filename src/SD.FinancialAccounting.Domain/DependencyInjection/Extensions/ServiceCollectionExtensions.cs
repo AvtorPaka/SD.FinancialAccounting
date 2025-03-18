@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IBankAccountService, BankAccountService>();
         services.AddScoped<IOperationCategoryService, OperationCategoryService>();
         services.AddScoped<IOperationService, OperationService>();
-        
+        services.AddScoped<IBalanceService, BalanceService>();
         return services;
     }
 }

@@ -8,7 +8,7 @@ public interface IOperationService
     public Task<long> CreateOperation(CreateOperationContainer container, CancellationToken cancellationToken);
 
     // Edit methods are separated due to significant differences in the logic of change processing.
-    public Task<OperationModel> EditOperationDescription(long id, string newDescription, CancellationToken cancellationToken);
+    public Task EditOperationDescription(long id, string newDescription, CancellationToken cancellationToken);
 
     public Task<EditedOperationContainer> EditOperationAmount(long id, decimal newAmount, CancellationToken cancellationToken);
 
@@ -20,6 +20,6 @@ public interface IOperationService
 
     public Task<IReadOnlyList<OperationModel>> GetOperations(CancellationToken cancellationToken);
 
-    public Task<IReadOnlyList<OperationCategoryModel>> GetOperationByBankAccountId(long bankAccountId,
+    public Task<IReadOnlyList<OperationModel>> GetOperationByBankAccountId(long bankAccountId,
         CancellationToken cancellationToken);
 }

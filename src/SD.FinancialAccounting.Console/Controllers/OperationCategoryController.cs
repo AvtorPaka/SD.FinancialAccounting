@@ -55,7 +55,7 @@ internal sealed class OperationCategoryController
 
         return new ControllerResponse(
             body:
-            $"\nEdited category:\n{container.EditedModel}\nAffected accounts [first 20]: [{string.Join(" , ", container.AffectedAccountId.Take(20))}]"
+            $"\nEdited category:\n{container.EditedModel}\nAffected accounts (ids) [first 20]: [{string.Join(" , ", container.AffectedAccountId.Take(20))}]"
         );
     }
 
@@ -69,7 +69,7 @@ internal sealed class OperationCategoryController
 
         return new ControllerResponse(
             body:
-            $"\nCategory with id : {request.Id} deleted.\nAffected accounts [first 20]: [{string.Join(" , ", affectedAccountId.Take(20))}]"
+            $"\nCategory with id : {request.Id} deleted.\nAffected accounts (ids) [first 20]: [{string.Join(" , ", affectedAccountId.Take(20))}]"
         );
     }
 

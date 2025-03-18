@@ -61,23 +61,29 @@ internal static class ConsoleHelper
     internal static int ReadKeyInRange(int minRange = 1, int maxRange = 5)
     {
         System.Console.TreatControlCAsInput = true;
-        var keyInfo = System.Console.ReadKey(true);
-        while (!(keyInfo.Key == ConsoleKey.C &&
-                 (keyInfo.Modifiers & ConsoleModifiers.Control) != 0) &&
-               (int.Parse(keyInfo.KeyChar.ToString()) < minRange || int.Parse(keyInfo.KeyChar.ToString()) > maxRange))
+        
+        while (true)
         {
-            keyInfo = System.Console.ReadKey(true);
-        }
+            var keyInfo = System.Console.ReadKey(true);
+            bool isCtrlC = keyInfo.Key == ConsoleKey.C && 
+                           (keyInfo.Modifiers & ConsoleModifiers.Control) != 0;
 
-        if (keyInfo.Key == ConsoleKey.C &&
-            (keyInfo.Modifiers & ConsoleModifiers.Control) != 0)
-        {
-            System.Console.TreatControlCAsInput = false;
-            return maxRange;
-        }
+            if (isCtrlC)
+            {
+                System.Console.TreatControlCAsInput = false;
+                return maxRange;
+            }
 
-        System.Console.TreatControlCAsInput = false;
-        return int.Parse(keyInfo.KeyChar.ToString());
+            if (char.IsDigit(keyInfo.KeyChar))
+            {
+                int number = int.Parse(keyInfo.KeyChar.ToString());
+                if (number >= minRange && number <= maxRange)
+                {
+                    System.Console.TreatControlCAsInput = false;
+                    return number;
+                }
+            }
+        }
     }
 
     internal static long ReadLong()

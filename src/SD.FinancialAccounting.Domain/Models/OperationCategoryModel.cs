@@ -10,6 +10,6 @@ public record OperationCategoryModel(
 {
     public override string ToString()
     {
-        return $"Id : {Id}\nType : {Type.ToString()}\nName : {Name}";
+        return $"Category Id : {Id}\nType : {Type.ToString()}\nName : {Name}";
     }
 };

@@ -12,9 +12,14 @@ namespace SD.FinancialAccounting.Domain.Services;
 internal sealed class OperationCategoryService : IOperationCategoryService
 {
     private readonly ICategoriesRepository _categoriesRepository;
+    private readonly IOperationsRepository _operationsRepository;
+    private readonly IBalanceService _balanceService;
 
-    public OperationCategoryService(ICategoriesRepository categoriesRepository)
+    public OperationCategoryService(ICategoriesRepository categoriesRepository,
+        IOperationsRepository operationsRepository, IBalanceService balanceService)
     {
+        _balanceService = balanceService;
+        _operationsRepository = operationsRepository;
         _categoriesRepository = categoriesRepository;
     }
 
@@ -71,7 +76,6 @@ internal sealed class OperationCategoryService : IOperationCategoryService
         return editedEntity.MapEntityToModel();
     }
 
-    // TODO: Add tough shit
     public async Task<EditedCategoryContainer> EditCategoryType(long id, OperationCategoryType newType,
         CancellationToken cancellationToken)
     {
@@ -84,12 +88,25 @@ internal sealed class OperationCategoryService : IOperationCategoryService
             throw new CategoryNotFoundException($"Operation Category with id: {id} not found.", ex);
         }
     }
-    
+
     private async Task<EditedCategoryContainer> EditCategoryTypeUnsafe(long id, OperationCategoryType newType,
         CancellationToken cancellationToken)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
-        throw new NotImplementedException();
+        using var transaction = _categoriesRepository.CreateTransactionScope();
+
+        var editedEntity = await _categoriesRepository.UpdateCategoryType(id, newType, cancellationToken);
+        
+        var operationViewEntities = await _operationsRepository.QueryOperations(cancellationToken);
+        long[] affectedAccountsIds = operationViewEntities.Where(e => e.CategoryId == id).Select(e => e.BankAccountId).Distinct().ToArray();
+        
+        await _balanceService.UpdateAccountsBalances(affectedAccountsIds, cancellationToken);
+
+        transaction.Complete();
+
+        return new EditedCategoryContainer(
+            EditedModel: editedEntity.MapEntityToModel(),
+            AffectedAccountId: affectedAccountsIds
+        );
     }
 
     public async Task<IReadOnlyList<long>> DeleteCategory(long id, CancellationToken cancellationToken)
@@ -103,11 +120,21 @@ internal sealed class OperationCategoryService : IOperationCategoryService
             throw new CategoryNotFoundException($"Operation Category with id: {id} not found.", ex);
         }
     }
-    
+
     private async Task<IReadOnlyList<long>> DeleteCategoryUnsafe(long id, CancellationToken cancellationToken)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
-        throw new NotImplementedException();
+        using var transaction = _categoriesRepository.CreateTransactionScope();
+
+        var operationViewEntities = await _operationsRepository.QueryOperations(cancellationToken);
+        long[] affectedAccountsIds = operationViewEntities.Where(e => e.CategoryId == id).Select(e => e.BankAccountId).Distinct().ToArray();
+
+        await _categoriesRepository.DeleteCategory(id, cancellationToken);
+
+        await _balanceService.UpdateAccountsBalances(affectedAccountsIds, cancellationToken);
+
+        transaction.Complete();
+
+        return affectedAccountsIds.ToList();
     }
 
     public async Task<IReadOnlyList<OperationCategoryModel>> GetAllCategories(CancellationToken cancellationToken)

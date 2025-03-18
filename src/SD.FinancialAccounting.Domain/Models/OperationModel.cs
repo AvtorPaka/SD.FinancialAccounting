@@ -12,6 +12,6 @@ public record OperationModel(
     public override string ToString()
     {
         return
-            $"Id : {Id}\nBank account Id : {BankAccountId}\n Operation Category :\n{Category}\n\nDate : {Date}\nDescription : {Description}";
+            $"Id : {Id}\nBank account Id : {BankAccountId}\nAmount: {Amount}\nDate : {Date}\nDescription : {Description}\n\nCategory :\n{Category}";
     }
 };

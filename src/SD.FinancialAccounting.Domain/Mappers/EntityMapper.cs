@@ -33,4 +33,26 @@ internal static class EntityMapper
     {
         return entities.Select(e => e.MapEntityToModel()).ToList();
     }
+
+    internal static OperationModel MapViewEntityToModel(this OperationViewEntity viewEntity)
+    {
+        return new OperationModel(
+            Id: viewEntity.OperationId,
+            BankAccountId: viewEntity.BankAccountId,
+            Amount: viewEntity.Amount,
+            Date: viewEntity.Date,
+            Description: viewEntity.Description,
+            Category: new OperationCategoryModel(
+                Id: viewEntity.CategoryId,
+                Type: viewEntity.CategoryType,
+                Name: viewEntity.CategoryName
+            )
+        );
+    }
+
+    internal static IReadOnlyList<OperationModel> MapViewEntitiesToModels(
+        this IReadOnlyList<OperationViewEntity> viewEntities)
+    {
+        return viewEntities.Select(e => e.MapViewEntityToModel()).ToList();
+    }
 }

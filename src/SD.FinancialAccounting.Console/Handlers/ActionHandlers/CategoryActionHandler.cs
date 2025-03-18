@@ -106,7 +106,7 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
     {
         System.Console.WriteLine(">>Input category id:");
         long categoryId = ConsoleHelper.ReadLong();
-        System.Console.WriteLine(">>Choose new category type:\n");
+        System.Console.WriteLine(">>Choose new category type:");
         ConsoleUiHelpers.PrintCategoryTypes();
         OperationCategoryType type = (OperationCategoryType)ConsoleHelper.ReadKeyInRange(1, 2);
 

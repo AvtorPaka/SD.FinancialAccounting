@@ -1,4 +1,4 @@
-## Software Design, Control Hw №1 || HSE-SE 2 course
+## Software Design || HSE-SE 2 course
 
 **Демченко Георгий Павлович, БПИ-235**
 

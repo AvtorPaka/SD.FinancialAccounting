@@ -94,17 +94,18 @@ UPDATE operation_categories set
         CancellationToken cancellationToken)
     {
         const string sqlQuery = @"
-UPDATE operation_categories set
-    type = @Type
-    WHERE id = @CategoryId
+UPDATE operation_categories SET
+    type = bulk.type
+    FROM UNNEST(@Categories::operation_category_v1[]) as bulk
+    WHERE operation_categories.id = bulk.id
     returning *;
 ";
         await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
 
+        CategoryEntity[] abuseDapperList = [new() { Id = id, Type = newType }];
         var sqlParameters = new
         {
-            CategoryId = id,
-            Type = newType
+            Categories = abuseDapperList
         };
 
         var editedEntities = await connection.QueryAsync<CategoryEntity>(

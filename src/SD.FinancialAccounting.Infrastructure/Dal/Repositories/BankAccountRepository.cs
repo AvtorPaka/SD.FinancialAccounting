@@ -12,53 +12,6 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
     {
     }
 
-    public async Task<IReadOnlyList<BankAccountEntity>> QueryAllAccounts(CancellationToken cancellationToken)
-    {
-        const string sqlQuery = @"
-SELECT * FROM bank_accounts;
-";
-        await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
-
-        var entities = await connection.QueryAsync<BankAccountEntity>(
-            new CommandDefinition(
-                commandText: sqlQuery,
-                cancellationToken: cancellationToken
-            )
-        );
-
-        return entities.ToList();
-    }
-
-    public async Task<IReadOnlyList<BankAccountEntity>> QueryAccountsByIds(long[] ids,
-        CancellationToken cancellationToken)
-    {
-        const string sqlQuery = @"
-SELECT * FROM bank_accounts WHERE id = ANY(@Ids);
-";
-        await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
-
-        var sqlParameters = new
-        {
-            Ids = ids
-        };
-
-        var entities = await connection.QueryAsync<BankAccountEntity>(
-            new CommandDefinition(
-                commandText: sqlQuery,
-                parameters: sqlParameters,
-                cancellationToken: cancellationToken
-            )
-        );
-
-        var entityList = entities.ToList();
-        if (entityList.Count == 0)
-        {
-            throw new EntityNotFoundException("Bank accounts not found.");
-        }
-
-        return entityList;
-    }
-
     public async Task<IReadOnlyList<BankAccountEntity>> AddAccounts(BankAccountEntity[] entities,
         CancellationToken cancellationToken)
     {
@@ -84,32 +37,6 @@ INSERT INTO bank_accounts (name, balance)
         );
 
         return addedEntities.ToList();
-    }
-
-    public async Task DeleteAccount(long id, CancellationToken cancellationToken)
-    {
-        const string sqlQuery = @"
-DELETE FROM bank_accounts WHERE id = @AccountId returning id;
-";
-        await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
-
-        var sqlParameters = new
-        {
-            AccountId = id
-        };
-
-        var deletedAccountId = await connection.QueryAsync<long>(
-            new CommandDefinition(
-                commandText: sqlQuery,
-                parameters: sqlParameters,
-                cancellationToken: cancellationToken
-            )
-        );
-
-        if (deletedAccountId.FirstOrDefault() != id)
-        {
-            throw new EntityNotFoundException("Bank account not found.");
-        }
     }
 
     public async Task<long[]> UpdateAccountsBalance(BankAccountEntity[] entities, CancellationToken cancellationToken)
@@ -179,5 +106,78 @@ UPDATE bank_accounts SET
         }
 
         return editedEntitiesList;
+    }
+
+    public async Task<IReadOnlyList<BankAccountEntity>> QueryAllAccounts(CancellationToken cancellationToken)
+    {
+        const string sqlQuery = @"
+SELECT * FROM bank_accounts;
+";
+        await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
+
+        var entities = await connection.QueryAsync<BankAccountEntity>(
+            new CommandDefinition(
+                commandText: sqlQuery,
+                cancellationToken: cancellationToken
+            )
+        );
+
+        return entities.ToList();
+    }
+
+    public async Task<IReadOnlyList<BankAccountEntity>> QueryAccountsByIds(long[] ids,
+        CancellationToken cancellationToken)
+    {
+        const string sqlQuery = @"
+SELECT * FROM bank_accounts WHERE id = ANY(@Ids);
+";
+        await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
+
+        var sqlParameters = new
+        {
+            Ids = ids
+        };
+
+        var entities = await connection.QueryAsync<BankAccountEntity>(
+            new CommandDefinition(
+                commandText: sqlQuery,
+                parameters: sqlParameters,
+                cancellationToken: cancellationToken
+            )
+        );
+
+        var entityList = entities.ToList();
+        if (entityList.Count == 0)
+        {
+            throw new EntityNotFoundException("Bank accounts not found.");
+        }
+
+        return entityList;
+    }
+
+    public async Task DeleteAccount(long id, CancellationToken cancellationToken)
+    {
+        const string sqlQuery = @"
+DELETE FROM bank_accounts WHERE id = @AccountId returning id;
+";
+        await using NpgsqlConnection connection = await GetAndOpenConnection(cancellationToken);
+
+        var sqlParameters = new
+        {
+            AccountId = id
+        };
+
+        var deletedAccountId = await connection.QueryAsync<long>(
+            new CommandDefinition(
+                commandText: sqlQuery,
+                parameters: sqlParameters,
+                cancellationToken: cancellationToken
+            )
+        );
+
+        if (deletedAccountId.FirstOrDefault() != id)
+        {
+            throw new EntityNotFoundException("Bank account not found.");
+        }
     }
 }

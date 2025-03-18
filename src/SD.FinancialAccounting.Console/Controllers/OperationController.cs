@@ -18,7 +18,7 @@ internal sealed class OperationController
     internal async Task<ControllerResponse> CreateNewOperation(CreateOperationRequest request,
         CancellationToken cancellationToken)
     {
-        var model = await _operationService.CreateOperation(
+        long createdId = await _operationService.CreateOperation(
             container: new CreateOperationContainer(
                 BankAccountId: request.BankAccountId,
                 Amount: request.Amount,
@@ -30,7 +30,7 @@ internal sealed class OperationController
         );
 
         return new ControllerResponse(
-            body: $"\nCreated operation:\n{model}"
+            body: $"\nCreated operation id: {createdId}"
         );
     }
 
@@ -39,14 +39,14 @@ internal sealed class OperationController
     internal async Task<ControllerResponse> EditOperationDescription(EditOperationDescriptionRequest request,
         CancellationToken cancellationToken)
     {
-        var model = await _operationService.EditOperationDescription(
+        await _operationService.EditOperationDescription(
             newDescription: request.Description,
             id: request.Id,
             cancellationToken: cancellationToken
         );
 
         return new ControllerResponse(
-            body: $"\nEdited operation:{model}\n"
+            body: $"\nOperation with Id : {request.Id} edited\n"
         );
     }
 
@@ -60,7 +60,7 @@ internal sealed class OperationController
         );
 
         return new ControllerResponse(
-            body: $"Operation with Id : {request.Id} edited.\nAffected account: {container.AffectedAccountId[0]}"
+            body: $"Operation with Id : {request.Id} edited.\nAffected accounts (ids) : {container.AffectedAccountId[0]}"
         );
     }
 
@@ -74,7 +74,7 @@ internal sealed class OperationController
         );
 
         return new ControllerResponse(
-            body: $"Operation with Id : {request.Id} edited.\nAffected account: {container.AffectedAccountId[0]}"
+            body: $"Operation with Id : {request.Id} edited.\nAffected accounts (ids) : {container.AffectedAccountId[0]}"
         );
     }
 
@@ -89,7 +89,7 @@ internal sealed class OperationController
 
         return new ControllerResponse(
             body:
-            $"Operation with Id : {request.Id} edited.\nAffected accounts: [{container.AffectedAccountId[0]}, {container.AffectedAccountId[1]}]"
+            $"Operation with Id : {request.Id} edited.\nAffected accounts (ids) : [{container.AffectedAccountId[0]}, {container.AffectedAccountId[1]}]"
         );
     }
 
@@ -102,7 +102,7 @@ internal sealed class OperationController
         );
 
         return new ControllerResponse(
-            body: $"\nOperation with id : {request.Id} deleted.\nAffected account : {affectedAccId}"
+            body: $"\nOperation with id : {request.Id} deleted.\nAffected accounts (ids) : {affectedAccId}"
         );
     }
 
