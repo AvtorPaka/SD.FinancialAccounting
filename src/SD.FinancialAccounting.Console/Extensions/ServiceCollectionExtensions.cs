@@ -11,6 +11,7 @@ internal static class ServiceCollectionExtensions
         services.AddScoped<BankAccountController>();
         services.AddScoped<OperationCategoryController>();
         services.AddScoped<OperationController>();
+        services.AddScoped<AnalyticsController>();
 
         return services;
     }

@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOperationCategoryService, OperationCategoryService>();
         services.AddScoped<IOperationService, OperationService>();
         services.AddScoped<IBalanceService, BalanceService>();
+        services.AddScoped<IAnalyticsService, AnalyticsService>();
         return services;
     }
 }

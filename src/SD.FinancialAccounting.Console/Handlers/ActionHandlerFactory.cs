@@ -20,7 +20,7 @@ internal class ActionHandlerFactory
             MainMenuAction.AccountsSection => new AccountActionHandler(_services),
             MainMenuAction.OperationsSection => new OperationActionHandler(_services),
             MainMenuAction.CategoriesSection => new CategoryActionHandler(_services),
-            MainMenuAction.AnalyticsSection => new ExitActionHandler(_services), //TODO: Rework
+            MainMenuAction.AnalyticsSection => new AnalyticsActionHandler(_services),
             MainMenuAction.Exit => new ExitActionHandler(_services),
             _ => throw new ArgumentException("Unsupported menu action type")
         };

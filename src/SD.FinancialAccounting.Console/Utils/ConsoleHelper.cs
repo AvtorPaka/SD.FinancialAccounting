@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.Primitives;
 using SD.FinancialAccounting.Domain.Models;
 
 namespace SD.FinancialAccounting.Console.Utils;
@@ -58,6 +59,24 @@ internal static class ConsoleHelper
         return builder.ToString();
     }
 
+    internal static string ConvertToString(this Dictionary<OperationCategoryModel, decimal> operationsGrouped)
+    {
+        StringBuilder builder = new StringBuilder();
+
+        if (operationsGrouped.Count == 0)
+        {
+            builder.AppendLine("No operations");
+            return builder.ToString().TrimEnd();;
+        }
+        
+        foreach (var kv in operationsGrouped)
+        {
+            builder.AppendLine($"{kv.Key.Id} - {kv.Key.Name} : {kv.Value}");
+        }
+
+        return builder.ToString().TrimEnd();
+    }
+
     internal static int ReadKeyInRange(int minRange = 1, int maxRange = 5)
     {
         System.Console.TreatControlCAsInput = true;
@@ -108,5 +127,21 @@ internal static class ConsoleHelper
         }
 
         return value;
+    }
+    
+    internal static DateTimeOffset ReadDateTimeOffset(bool isEndDate = false)
+    {
+        bool state = DateTime.TryParse(System.Console.ReadLine(), out var date);
+        while (!state)
+        {
+            state = DateTime.TryParse(System.Console.ReadLine(), out date);
+        }
+
+        if (isEndDate)
+        {
+            date = date.AddDays(1);
+        }
+        
+        return new DateTimeOffset(date, new TimeSpan(0, 0, 0));;
     }
 }

@@ -38,7 +38,7 @@ internal static class ConsoleUiHelpers
     
     internal static void PrintAnalyticsSectionMenu()
     {
-        System.Console.WriteLine($"\nAnalytics Section\n{Delimiter}\n[1]. \n[2]. \n[3]. \n[4]. Cancel\n{Delimiter}");
+        System.Console.WriteLine($"\nAnalytics Section\n{Delimiter}\n[1]. Get account period incomes-expenses difference \n[2]. Get account operations groupped \n[3]. Cancel\n{Delimiter}");
     }
     
     internal static void PrintExportSubSectionMenu()
