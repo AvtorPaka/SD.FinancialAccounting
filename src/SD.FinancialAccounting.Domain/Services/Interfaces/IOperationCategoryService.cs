@@ -1,4 +1,5 @@
 using SD.FinancialAccounting.Domain.Containers;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Domain.Models;
 using SD.FinancialAccounting.Domain.Models.Enums;
 
@@ -17,4 +18,6 @@ public interface IOperationCategoryService
     public Task<IReadOnlyList<long>> DeleteCategory(long id, CancellationToken cancellationToken);
 
     public Task<IReadOnlyList<OperationCategoryModel>> GetAllCategories(CancellationToken cancellationToken);
+    
+    public Task ExportCategories(ExportType exportType, string exportPath, CancellationToken cancellationToken);
 }

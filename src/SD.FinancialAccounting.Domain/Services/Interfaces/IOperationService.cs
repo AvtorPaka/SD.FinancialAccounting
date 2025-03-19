@@ -1,4 +1,5 @@
 using SD.FinancialAccounting.Domain.Containers;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Domain.Models;
 
 namespace SD.FinancialAccounting.Domain.Services.Interfaces;
@@ -22,4 +23,6 @@ public interface IOperationService
 
     public Task<IReadOnlyList<OperationModel>> GetOperationByBankAccountId(long bankAccountId,
         CancellationToken cancellationToken);
+    
+    public Task ExportOperations(ExportType exportType, string exportPath, CancellationToken cancellationToken);
 }

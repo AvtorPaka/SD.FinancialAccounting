@@ -1,15 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
+using SD.FinancialAccounting.Console.Contracts.Requests;
 using SD.FinancialAccounting.Console.Contracts.Requests.Account;
 using SD.FinancialAccounting.Console.Contracts.Responses;
 using SD.FinancialAccounting.Console.Controllers;
-using SD.FinancialAccounting.Console.Enums;
 using SD.FinancialAccounting.Console.Handlers.ActionHandlers.Abstraction;
+using SD.FinancialAccounting.Console.Handlers.ActionHandlers.Enums;
 using SD.FinancialAccounting.Console.Utils;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Hosting.Abstractions;
 
 namespace SD.FinancialAccounting.Console.Handlers.ActionHandlers;
 
-internal class AccountActionHandler: ActionHandlerBase
+internal class AccountActionHandler : ActionHandlerBase
 {
     public AccountActionHandler(IServiceProvider serviceProvider) : base(serviceProvider)
     {
@@ -35,22 +37,31 @@ internal class AccountActionHandler: ActionHandlerBase
         };
     }
 
-    // TODO: Rework
-    private static async Task<ResponseBase> HandleExport(BankAccountController controller, CancellationToken cancellationToken)
+    private static async Task<ResponseBase> HandleExport(BankAccountController controller,
+        CancellationToken cancellationToken)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
         ConsoleUiHelpers.PrintExportSubSectionMenu();
-        ExportType exportType = (ExportType)ConsoleHelper.ReadKeyInRange(1, 4);
+        ExportSectionType exportSectionType = (ExportSectionType)ConsoleHelper.ReadKeyInRange(1, 4);
 
-        if (exportType == ExportType.Cancel)
+        if (exportSectionType == ExportSectionType.Cancel)
         {
             return new ControllerResponse("");
         }
-                
-        return new ControllerResponse("Export bla bla");
+        
+        System.Console.WriteLine(">>Input path to export file:");
+        string exportPath = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect export path");
+
+        return await controller.ExportAccounts(
+            new ExportDataRequest(
+                Type: (ExportType)(exportSectionType),
+                PathToExport: exportPath
+            ),
+            cancellationToken: cancellationToken
+        );
     }
 
-    private static async Task<ResponseBase> HandleCreate(BankAccountController controller, CancellationToken cancellationToken)
+    private static async Task<ResponseBase> HandleCreate(BankAccountController controller,
+        CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input bank account name:");
         string accountName = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect account name");
@@ -68,7 +79,7 @@ internal class AccountActionHandler: ActionHandlerBase
     {
         System.Console.WriteLine(">>Input bank account id:");
         long editAccountId = ConsoleHelper.ReadLong();
-                
+
         System.Console.WriteLine(">>Input new bank account name:");
         string editAccountName =
             System.Console.ReadLine() ?? throw new ArgumentException("Incorrect account name");

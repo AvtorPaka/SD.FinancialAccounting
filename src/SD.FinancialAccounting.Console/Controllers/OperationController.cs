@@ -1,3 +1,4 @@
+using SD.FinancialAccounting.Console.Contracts.Requests;
 using SD.FinancialAccounting.Console.Contracts.Requests.Operation;
 using SD.FinancialAccounting.Console.Contracts.Responses;
 using SD.FinancialAccounting.Console.Utils;
@@ -125,6 +126,20 @@ internal sealed class OperationController
 
         return new ControllerResponse(
             body: operations.ConvertToString()
+        );
+    }
+    
+    internal async Task<ControllerResponse> ExportOperations(ExportDataRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _operationService.ExportOperations(
+            exportType: request.Type,
+            exportPath: request.PathToExport,
+            cancellationToken: cancellationToken
+        );
+
+        return new ControllerResponse(
+            body: "\nData exported."
         );
     }
 }

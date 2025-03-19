@@ -1,3 +1,4 @@
+using SD.FinancialAccounting.Console.Contracts.Requests;
 using SD.FinancialAccounting.Console.Contracts.Requests.Account;
 using SD.FinancialAccounting.Console.Contracts.Responses;
 using SD.FinancialAccounting.Console.Mappers;
@@ -53,6 +54,20 @@ internal sealed class BankAccountController
 
         return new ControllerResponse(
             body: accounts.ConvertToString()
+        );
+    }
+
+    internal async Task<ControllerResponse> ExportAccounts(ExportDataRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _bankAccountService.ExportAccounts(
+            exportType: request.Type,
+            exportPath: request.PathToExport,
+            cancellationToken: cancellationToken
+        );
+
+        return new ControllerResponse(
+            body: "\nData exported."
         );
     }
 }

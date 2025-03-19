@@ -1,10 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
+using SD.FinancialAccounting.Console.Contracts.Requests;
 using SD.FinancialAccounting.Console.Contracts.Requests.Operation;
 using SD.FinancialAccounting.Console.Contracts.Responses;
 using SD.FinancialAccounting.Console.Controllers;
-using SD.FinancialAccounting.Console.Enums;
 using SD.FinancialAccounting.Console.Handlers.ActionHandlers.Abstraction;
+using SD.FinancialAccounting.Console.Handlers.ActionHandlers.Enums;
 using SD.FinancialAccounting.Console.Utils;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Hosting.Abstractions;
 
 namespace SD.FinancialAccounting.Console.Handlers.ActionHandlers;
@@ -49,21 +51,28 @@ internal class OperationActionHandler : ActionHandlerBase
             cancellationToken: cancellationToken
         );
     }
-
-    // TODO: Rework
+    
     private static async Task<ResponseBase> HandleExport(OperationController controller,
         CancellationToken cancellationToken)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken);
         ConsoleUiHelpers.PrintExportSubSectionMenu();
-        ExportType exportType = (ExportType)ConsoleHelper.ReadKeyInRange(1, 4);
+        ExportSectionType exportSectionType = (ExportSectionType)ConsoleHelper.ReadKeyInRange(1, 4);
 
-        if (exportType == ExportType.Cancel)
+        if (exportSectionType == ExportSectionType.Cancel)
         {
             return new ControllerResponse("");
         }
+        
+        System.Console.WriteLine(">>Input path to export file:");
+        string exportPath = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect export path");
 
-        return new ControllerResponse("Export bla bla");
+        return await controller.ExportOperations(
+            new ExportDataRequest(
+                Type: (ExportType)(exportSectionType),
+                PathToExport: exportPath
+            ),
+            cancellationToken: cancellationToken
+        );
     }
 
     private static async Task<ResponseBase> HandleCreate(OperationController controller,

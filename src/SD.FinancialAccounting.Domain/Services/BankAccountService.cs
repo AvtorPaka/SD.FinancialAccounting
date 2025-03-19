@@ -1,6 +1,8 @@
 using SD.FinancialAccounting.Domain.Contracts.Dal.Entities;
 using SD.FinancialAccounting.Domain.Contracts.Dal.Interfaces;
 using SD.FinancialAccounting.Domain.Exceptions;
+using SD.FinancialAccounting.Domain.Export;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Domain.Mappers;
 using SD.FinancialAccounting.Domain.Models;
 using SD.FinancialAccounting.Domain.Services.Interfaces;
@@ -89,6 +91,20 @@ internal sealed class BankAccountService : IBankAccountService
         var entities = await _bankAccountRepository.QueryAllAccounts(cancellationToken);
 
         return entities.MapEntitiesToModels();
+    }
+
+    public async Task ExportAccounts(ExportType exportType, string exportPath, CancellationToken cancellationToken)
+    {
+        var operations = await GetAllAccounts(cancellationToken);
+
+        DataExporter exporter = DataExporter.Instance;
+        
+        await exporter.ExportAsync(
+            models: operations,
+            exportType: exportType,
+            exportPath: exportPath,
+            cancellationToken: cancellationToken
+        );
     }
 
     private static void ValidateAccountName(string accountName)

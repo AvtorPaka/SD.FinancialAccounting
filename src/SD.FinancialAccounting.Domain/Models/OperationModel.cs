@@ -1,3 +1,5 @@
+using SD.FinancialAccounting.Domain.Models.Interfaces;
+
 namespace SD.FinancialAccounting.Domain.Models;
 
 public record OperationModel(
@@ -7,7 +9,7 @@ public record OperationModel(
     decimal Amount,
     DateTimeOffset Date,
     string Description
-)
+): IExportable
 {
     public override string ToString()
     {

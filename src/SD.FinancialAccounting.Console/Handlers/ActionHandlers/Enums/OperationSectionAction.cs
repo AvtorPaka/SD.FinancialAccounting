@@ -1,4 +1,4 @@
-namespace SD.FinancialAccounting.Console.Enums;
+namespace SD.FinancialAccounting.Console.Handlers.ActionHandlers.Enums;
 
 public enum OperationSectionAction
 {

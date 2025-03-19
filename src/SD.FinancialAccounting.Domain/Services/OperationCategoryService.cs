@@ -2,6 +2,8 @@ using SD.FinancialAccounting.Domain.Containers;
 using SD.FinancialAccounting.Domain.Contracts.Dal.Entities;
 using SD.FinancialAccounting.Domain.Contracts.Dal.Interfaces;
 using SD.FinancialAccounting.Domain.Exceptions;
+using SD.FinancialAccounting.Domain.Export;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Domain.Mappers;
 using SD.FinancialAccounting.Domain.Models;
 using SD.FinancialAccounting.Domain.Models.Enums;
@@ -142,6 +144,20 @@ internal sealed class OperationCategoryService : IOperationCategoryService
         var categoryEntities = await _categoriesRepository.QueryAllCategories(cancellationToken);
 
         return categoryEntities.MapEntitiesToModels();
+    }
+
+    public async Task ExportCategories(ExportType exportType, string exportPath, CancellationToken cancellationToken)
+    {
+        var operations = await GetAllCategories(cancellationToken);
+
+        DataExporter exporter = DataExporter.Instance;
+        
+        await exporter.ExportAsync(
+            models: operations,
+            exportType: exportType,
+            exportPath: exportPath,
+            cancellationToken: cancellationToken
+        );
     }
 
     private static void ValidateCategoryName(string categoryName)

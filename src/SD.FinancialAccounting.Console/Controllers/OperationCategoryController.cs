@@ -1,3 +1,4 @@
+using SD.FinancialAccounting.Console.Contracts.Requests;
 using SD.FinancialAccounting.Console.Contracts.Requests.OperationCategory;
 using SD.FinancialAccounting.Console.Contracts.Responses;
 using SD.FinancialAccounting.Console.Mappers;
@@ -79,6 +80,20 @@ internal sealed class OperationCategoryController
 
         return new ControllerResponse(
             body: categories.ConvertToString()
+        );
+    }
+    
+    internal async Task<ControllerResponse> ExportCategories(ExportDataRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _operationCategoryService.ExportCategories(
+            exportType: request.Type,
+            exportPath: request.PathToExport,
+            cancellationToken: cancellationToken
+        );
+
+        return new ControllerResponse(
+            body: "\nData exported."
         );
     }
 }

@@ -2,6 +2,8 @@ using SD.FinancialAccounting.Domain.Containers;
 using SD.FinancialAccounting.Domain.Contracts.Dal.Entities;
 using SD.FinancialAccounting.Domain.Contracts.Dal.Interfaces;
 using SD.FinancialAccounting.Domain.Exceptions;
+using SD.FinancialAccounting.Domain.Export;
+using SD.FinancialAccounting.Domain.Export.Enums;
 using SD.FinancialAccounting.Domain.Mappers;
 using SD.FinancialAccounting.Domain.Models;
 using SD.FinancialAccounting.Domain.Services.Interfaces;
@@ -53,9 +55,9 @@ internal sealed class OperationService : IOperationService
             ],
             cancellationToken: cancellationToken
         );
-        
+
         await _balanceService.UpdateAccountsBalances([container.BankAccountId], cancellationToken);
-        
+
         transaction.Complete();
 
         return createdOperationId[0];
@@ -85,12 +87,12 @@ internal sealed class OperationService : IOperationService
         {
             ValidateOperationAmount(newAmount);
             using var transaction = _operationsRepository.CreateTransactionScope();
-            
+
             var editedEntity =
                 await _operationsRepository.UpdateOperationAmount(id, newAmount, cancellationToken);
-            
+
             await _balanceService.UpdateAccountsBalances([editedEntity.BankAccountId], cancellationToken);
-            
+
             transaction.Complete();
             return new EditedOperationContainer(
                 AffectedAccountId: new List<long> { editedEntity.BankAccountId }
@@ -114,11 +116,12 @@ internal sealed class OperationService : IOperationService
             {
                 throw new ValidationException("New bank account id must be different from previous value.");
             }
-            
+
             var editedEntity =
                 await _operationsRepository.UpdateOperationAccountId(id, newAccountId, cancellationToken);
 
-            await _balanceService.UpdateAccountsBalances([editedEntity.BankAccountId, oldEntity.BankAccountId], cancellationToken);
+            await _balanceService.UpdateAccountsBalances([editedEntity.BankAccountId, oldEntity.BankAccountId],
+                cancellationToken);
 
             transaction.Complete();
             return new EditedOperationContainer(
@@ -193,6 +196,20 @@ internal sealed class OperationService : IOperationService
             await _operationsRepository.QueryOperationsByAccounts([bankAccountId], cancellationToken);
 
         return operationViewEntities.MapViewEntitiesToModels();
+    }
+
+    public async Task ExportOperations(ExportType exportType, string exportPath, CancellationToken cancellationToken)
+    {
+        IReadOnlyList<OperationModel> operations = await GetOperations(cancellationToken);
+
+        DataExporter exporter = DataExporter.Instance;
+        
+        await exporter.ExportAsync(
+            models: operations,
+            exportType: exportType,
+            exportPath: exportPath,
+            cancellationToken: cancellationToken
+        );
     }
 
     private static void ValidateOperationDescription(string description)
