@@ -25,20 +25,42 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
 
         await using var scope = Services.CreateAsyncScope();
         var controller = scope.ServiceProvider.GetRequiredService<OperationCategoryController>();
+        var decorator = scope.ServiceProvider.GetRequiredService<ControllerActionTimerDecorator>();
 
         return categoryAction switch
         {
-            CategorySectionAction.GetAll => await controller.GetCategories(cancellationToken),
-            CategorySectionAction.Create => await HandleCreate(controller, cancellationToken),
-            CategorySectionAction.Edit => await HandleEdit(controller, cancellationToken),
-            CategorySectionAction.Delete => await HandleDelete(controller, cancellationToken),
-            CategorySectionAction.Export => await HandleExport(controller, cancellationToken),
+            CategorySectionAction.GetAll => await HandleGetAll(controller, decorator, cancellationToken),
+            CategorySectionAction.Create => await HandleCreate(controller, decorator, cancellationToken),
+            CategorySectionAction.Edit => await HandleEdit(controller, decorator, cancellationToken),
+            CategorySectionAction.Delete => await HandleDelete(controller, decorator, cancellationToken),
+            CategorySectionAction.Export => await HandleExport(controller, decorator, cancellationToken),
             CategorySectionAction.Cancel => new ControllerResponse(""),
             _ => throw new ArgumentException("Unsupported operation category action type")
         };
     }
 
-    private static async Task<ResponseBase> HandleExport(OperationCategoryController controller,
+    private static async Task<ResponseBase> HandleGetAll(
+        OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
+        CancellationToken cancellationToken)
+    {
+        ControllerAction action = async (request, token) =>
+            await controller.GetCategories(
+                (EmptyRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
+            request: new EmptyRequest(),
+            cancellationToken: cancellationToken
+        );
+    }
+
+    private static async Task<ResponseBase> HandleExport(
+        OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         ConsoleUiHelpers.PrintExportSubSectionMenu();
@@ -48,11 +70,19 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         {
             return new ControllerResponse("");
         }
-        
+
         System.Console.WriteLine(">>Input path to export file:");
         string exportPath = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect export path");
 
-        return await controller.ExportCategories(
+        ControllerAction action = async (request, token) =>
+            await controller.ExportCategories(
+                (ExportDataRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new ExportDataRequest(
                 Type: (ExportType)(exportSectionType),
                 PathToExport: exportPath
@@ -61,7 +91,9 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleCreate(OperationCategoryController controller,
+    private static async Task<ResponseBase> HandleCreate(
+        OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input category name:");
@@ -70,7 +102,15 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         ConsoleUiHelpers.PrintCategoryTypes();
         OperationCategoryType type = (OperationCategoryType)ConsoleHelper.ReadKeyInRange(1, 2);
 
-        return await controller.CreateNewCategory(
+        ControllerAction action = async (request, token) =>
+            await controller.CreateNewCategory(
+                (CreateCategoryRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new CreateCategoryRequest(
                 Type: type,
                 Name: categoryName
@@ -79,7 +119,9 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleEdit(OperationCategoryController controller,
+    private static async Task<ResponseBase> HandleEdit
+    (OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         ConsoleUiHelpers.PrintEditCategorySubsectionMenu();
@@ -87,14 +129,16 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
 
         return editAction switch
         {
-            EditCategoryAction.Name => await HandleEditName(controller, cancellationToken),
-            EditCategoryAction.Type => await HandleEditType(controller, cancellationToken),
+            EditCategoryAction.Name => await HandleEditName(controller, timerDecorator, cancellationToken),
+            EditCategoryAction.Type => await HandleEditType(controller, timerDecorator, cancellationToken),
             EditCategoryAction.Cancel => new ControllerResponse(""),
             _ => throw new ArgumentException("Unsupported edit operation action type")
         };
     }
 
-    private static async Task<ResponseBase> HandleEditName(OperationCategoryController controller,
+    private static async Task<ResponseBase> HandleEditName(
+        OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input category id:");
@@ -102,7 +146,15 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         System.Console.WriteLine(">>Input category name:");
         string categoryName = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect category name");
 
-        return await controller.EditCategoryName(
+        ControllerAction action = async (request, token) =>
+            await controller.EditCategoryName(
+                (EditCategoryNameRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new EditCategoryNameRequest(
                 Id: categoryId,
                 NewName: categoryName
@@ -111,7 +163,9 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleEditType(OperationCategoryController controller,
+    private static async Task<ResponseBase> HandleEditType(
+        OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input category id:");
@@ -120,7 +174,15 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         ConsoleUiHelpers.PrintCategoryTypes();
         OperationCategoryType type = (OperationCategoryType)ConsoleHelper.ReadKeyInRange(1, 2);
 
-        return await controller.EditCategoryType(
+        ControllerAction action = async (request, token) =>
+            await controller.EditCategoryType(
+                (EditCategoryTypeRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new EditCategoryTypeRequest(
                 Id: categoryId,
                 NewType: type
@@ -129,13 +191,23 @@ internal sealed class CategoryActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleDelete(OperationCategoryController controller,
+    private static async Task<ResponseBase> HandleDelete(
+        OperationCategoryController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input category id:");
         long categoryId = ConsoleHelper.ReadLong();
 
-        return await controller.DeleteCategory(
+        ControllerAction action = async (request, token) =>
+            await controller.DeleteCategory(
+                (DeleteCategoryRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new DeleteCategoryRequest(
                 Id: categoryId
             ),

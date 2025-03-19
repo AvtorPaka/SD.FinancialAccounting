@@ -48,7 +48,7 @@ internal sealed class BankAccountController
         );
     }
 
-    internal async Task<ControllerResponse> GetAccounts(CancellationToken cancellationToken)
+    internal async Task<ControllerResponse> GetAccounts(EmptyRequest emptyRequest, CancellationToken cancellationToken)
     {
         var accounts = await _bankAccountService.GetAllAccounts(cancellationToken);
 

@@ -30,11 +30,11 @@ public class AnalyticsController
         );
     }
 
-    public async Task<ControllerResponse> GetAccountOperationsGrouped(long accountId,
+    public async Task<ControllerResponse> GetAccountOperationsGrouped(GetAccountOperationsGroupedRequest request,
         CancellationToken cancellationToken)
     {
         AccountOperationsSummaryModel summaryModel = await _analyticsService.CalculateAccountOperationsGroup(
-            accountId: accountId,
+            accountId: request.AccountId,
             cancellationToken: cancellationToken
         );
 

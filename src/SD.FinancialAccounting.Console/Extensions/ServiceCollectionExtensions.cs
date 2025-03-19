@@ -19,6 +19,7 @@ internal static class ServiceCollectionExtensions
     internal static IServiceCollection AddConsoleInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<ActionHandlerFactory>();
+        services.AddScoped<ControllerActionTimerDecorator>();
         return services;
     }
 }

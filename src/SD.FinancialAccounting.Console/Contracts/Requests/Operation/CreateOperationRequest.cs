@@ -5,4 +5,4 @@ public record CreateOperationRequest(
     long OperationCategoryId,
     decimal Amount,
     string? Description
-);
+): IRequest;

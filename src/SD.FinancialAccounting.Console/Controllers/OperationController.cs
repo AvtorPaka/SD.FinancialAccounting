@@ -107,7 +107,7 @@ internal sealed class OperationController
         );
     }
 
-    internal async Task<ControllerResponse> GetAllOperations(CancellationToken cancellationToken)
+    internal async Task<ControllerResponse> GetAllOperations(EmptyRequest request, CancellationToken cancellationToken)
     {
         var operations = await _operationService.GetOperations(cancellationToken);
 

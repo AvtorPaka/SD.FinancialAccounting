@@ -24,20 +24,42 @@ internal class AccountActionHandler : ActionHandlerBase
 
         await using var scope = Services.CreateAsyncScope();
         var controller = scope.ServiceProvider.GetRequiredService<BankAccountController>();
+        var decorator = scope.ServiceProvider.GetRequiredService<ControllerActionTimerDecorator>();
 
         return accountAction switch
         {
-            AccountSectionAction.GetAll => await controller.GetAccounts(cancellationToken),
-            AccountSectionAction.Create => await HandleCreate(controller, cancellationToken),
-            AccountSectionAction.Edit => await HandleEdit(controller, cancellationToken),
-            AccountSectionAction.Delete => await HandleDelete(controller, cancellationToken),
-            AccountSectionAction.Export => await HandleExport(controller, cancellationToken),
+            AccountSectionAction.GetAll => await HandleGetAll(controller, decorator, cancellationToken),
+            AccountSectionAction.Create => await HandleCreate(controller, decorator, cancellationToken),
+            AccountSectionAction.Edit => await HandleEdit(controller, decorator, cancellationToken),
+            AccountSectionAction.Delete => await HandleDelete(controller, decorator, cancellationToken),
+            AccountSectionAction.Export => await HandleExport(controller, decorator, cancellationToken),
             AccountSectionAction.Cancel => new ControllerResponse(""),
             _ => throw new ArgumentException("Unsupported account action type")
         };
     }
 
-    private static async Task<ResponseBase> HandleExport(BankAccountController controller,
+    private static async Task<ResponseBase> HandleGetAll(
+        BankAccountController controller,
+        ControllerActionTimerDecorator timerDecorator,
+        CancellationToken cancellationToken)
+    {
+        ControllerAction action = async (request, token) =>
+            await controller.GetAccounts(
+                (EmptyRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
+            request: new EmptyRequest(),
+            cancellationToken: cancellationToken
+        );
+    }
+
+    private static async Task<ResponseBase> HandleExport(
+        BankAccountController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         ConsoleUiHelpers.PrintExportSubSectionMenu();
@@ -47,12 +69,20 @@ internal class AccountActionHandler : ActionHandlerBase
         {
             return new ControllerResponse("");
         }
-        
+
         System.Console.WriteLine(">>Input path to export file:");
         string exportPath = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect export path");
 
-        return await controller.ExportAccounts(
-            new ExportDataRequest(
+        ControllerAction action = async (request, token) =>
+            await controller.ExportAccounts(
+                (ExportDataRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
+            request: new ExportDataRequest(
                 Type: (ExportType)(exportSectionType),
                 PathToExport: exportPath
             ),
@@ -60,13 +90,23 @@ internal class AccountActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleCreate(BankAccountController controller,
+    private static async Task<ResponseBase> HandleCreate(
+        BankAccountController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input bank account name:");
         string accountName = System.Console.ReadLine() ?? throw new ArgumentException("Incorrect account name");
 
-        return await controller.CreateNewAccount(
+        ControllerAction action = async (request, token) =>
+            await controller.CreateNewAccount(
+                (CreateAccountRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new CreateAccountRequest(
                 Name: accountName
             ),
@@ -74,7 +114,9 @@ internal class AccountActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleEdit(BankAccountController controller,
+    private static async Task<ResponseBase> HandleEdit(
+        BankAccountController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input bank account id:");
@@ -84,7 +126,15 @@ internal class AccountActionHandler : ActionHandlerBase
         string editAccountName =
             System.Console.ReadLine() ?? throw new ArgumentException("Incorrect account name");
 
-        return await controller.EditAccount(
+        ControllerAction action = async (request, token) =>
+            await controller.EditAccount(
+                (EditAccountRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new EditAccountRequest(
                 Id: editAccountId,
                 NewName: editAccountName
@@ -93,13 +143,23 @@ internal class AccountActionHandler : ActionHandlerBase
         );
     }
 
-    private static async Task<ResponseBase> HandleDelete(BankAccountController controller,
+    private static async Task<ResponseBase> HandleDelete(
+        BankAccountController controller,
+        ControllerActionTimerDecorator timerDecorator,
         CancellationToken cancellationToken)
     {
         System.Console.WriteLine(">>Input bank account id:");
         long deleteAccountId = ConsoleHelper.ReadLong();
 
-        return await controller.DeleteAccount(
+        ControllerAction action = async (request, token) =>
+            await controller.DeleteAccount(
+                (DeleteAccountRequest)request,
+                token
+            );
+
+        timerDecorator.SetControllerAction(action);
+
+        return await timerDecorator.ExecuteActionWithMeasuring(
             new DeleteAccountRequest(
                 Id: deleteAccountId
             ),

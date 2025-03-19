@@ -74,7 +74,7 @@ internal sealed class OperationCategoryController
         );
     }
 
-    internal async Task<ControllerResponse> GetCategories(CancellationToken cancellationToken)
+    internal async Task<ControllerResponse> GetCategories(EmptyRequest emptyRequest, CancellationToken cancellationToken)
     {
         var categories = await _operationCategoryService.GetAllCategories(cancellationToken);
 

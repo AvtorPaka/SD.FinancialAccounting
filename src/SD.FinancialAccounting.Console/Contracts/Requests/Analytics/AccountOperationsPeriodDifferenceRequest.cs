@@ -4,4 +4,4 @@ public record AccountOperationsPeriodDifferenceRequest(
     long AccountId,
     DateTimeOffset StartDate,
     DateTimeOffset EndDate
-);
+): IRequest;
