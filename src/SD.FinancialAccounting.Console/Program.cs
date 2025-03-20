@@ -1,9 +1,33 @@
-﻿namespace SD.FinancialAccounting.Console;
+﻿using SD.FinancialAccounting.Console.Extensions;
+using SD.FinancialAccounting.Domain.DependencyInjection.Extensions;
+using SD.FinancialAccounting.Hosting;
+using SD.FinancialAccounting.Infrastructure.Extensions;
 
-class Program
+namespace SD.FinancialAccounting.Console;
+
+internal sealed class Program
 {
-    private static void Main()
+    private static async Task Main()
     {
-        System.Console.WriteLine("Hi hi ha ha");
+        var hostBuilder = Host
+            .CreateDefaultBuilder()
+            .ConfigureConsoleHandler();
+
+        hostBuilder.ConfigureServices((config, services) =>
+            {
+                services
+                    .AddConsoleInfrastructure()
+                    .AddControllers()
+                    .AddDomainServices()
+                    .AddDalRepositories()
+                    .AddDalInfrastructure(config);
+            }
+        );
+
+
+        using var app = hostBuilder.Build();
+        await app
+            .MigrateUp()
+            .RunAsync();
     }
 }

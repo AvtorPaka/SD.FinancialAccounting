@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SD.FinancialAccounting.Doma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SD.FinancialAccounting.Infrastructure", "src\SD.FinancialAccounting.Infrastructure\SD.FinancialAccounting.Infrastructure.csproj", "{0C3FFE63-3320-4EE6-8B45-4F3473B2EB39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SD.FinancialAccounting.Hosting", "src\SD.FinancialAccounting.Hosting\SD.FinancialAccounting.Hosting.csproj", "{AFD94008-CC54-4B1B-AEA6-69168FDCFEBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{0C3FFE63-3320-4EE6-8B45-4F3473B2EB39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C3FFE63-3320-4EE6-8B45-4F3473B2EB39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C3FFE63-3320-4EE6-8B45-4F3473B2EB39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD94008-CC54-4B1B-AEA6-69168FDCFEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD94008-CC54-4B1B-AEA6-69168FDCFEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD94008-CC54-4B1B-AEA6-69168FDCFEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD94008-CC54-4B1B-AEA6-69168FDCFEBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
